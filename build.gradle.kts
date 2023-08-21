@@ -24,7 +24,7 @@ allprojects {
 }
 
 subprojects {
-    tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+    tasks.withType<Detekt>().configureEach {
         description = "Runs a custom detekt build."
         config.setFrom(files("$rootDir/config/detekt.yml"))
         autoCorrect = true
