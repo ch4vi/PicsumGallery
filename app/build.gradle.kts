@@ -1,7 +1,9 @@
 plugins {
     id("com.android.application")
+    id("kotlin-android")
+    id("kotlin-parcelize")
     id("kotlin-kapt")
-    id("org.jetbrains.kotlin.android")
+    id("com.google.dagger.hilt.android")
 }
 
 val appName = "Picsum Gallery"

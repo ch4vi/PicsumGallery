@@ -15,6 +15,7 @@ plugins {
     alias(libs.plugins.plugin.kotlin) apply false
     alias(libs.plugins.plugin.detekt) apply false
     alias(libs.plugins.plugin.ktlint) apply false
+    alias(libs.plugins.plugin.hilt) apply false
 }
 
 allprojects {
