@@ -26,26 +26,32 @@ class RetrofitConfiguration {
         .build()
 
     private fun initClient(): OkHttpClient {
-        val logging = HttpLoggingInterceptor()
-        if (Constants.NETWORK_LOGGING_ENABLED) {
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY)
-        } else {
-            logging.setLevel(HttpLoggingInterceptor.Level.NONE)
-        }
+        return OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor())
+            .addInterceptor(headerInterceptor())
+            .readTimeout(TIMEOUT, TimeUnit.SECONDS)
+            .build()
+    }
 
-        val headers = Interceptor { chain ->
+    private fun headerInterceptor(): Interceptor {
+        return Interceptor { chain ->
             val request = chain.request()
                 .newBuilder()
                 .addHeader("accept", "application/json")
                 .build()
             chain.proceed(request)
         }
+    }
 
-        return OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .addInterceptor(headers)
-            .readTimeout(TIMEOUT, TimeUnit.SECONDS)
-            .build()
+    private fun loggingInterceptor(): Interceptor {
+        return HttpLoggingInterceptor().apply {
+            if (Constants.NETWORK_LOGGING_ENABLED) {
+                setLevel(HttpLoggingInterceptor.Level.BODY)
+            } else {
+                setLevel(HttpLoggingInterceptor.Level.NONE)
+            }
+        }
+
     }
 
     private fun initRetrofit(moshi: Moshi, client: OkHttpClient): Retrofit = Retrofit.Builder()
