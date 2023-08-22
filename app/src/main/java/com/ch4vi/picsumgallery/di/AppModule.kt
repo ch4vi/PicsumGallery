@@ -71,6 +71,6 @@ class AppModule {
             apiDatasource = apiDataSource,
             databaseDataSource = appDatabase.pictureDao(),
             preferencesDatasource = preferencesDatasource,
-            networkConnectivity = networkConnectivity,
+            networkConnectivity = networkConnectivity
         )
 }
