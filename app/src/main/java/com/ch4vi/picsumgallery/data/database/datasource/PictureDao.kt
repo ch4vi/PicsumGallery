@@ -12,25 +12,13 @@ import kotlinx.coroutines.flow.Flow
 interface PictureDao {
 
     @Transaction
-    @Query("SELECT * FROM picture_cache LIMIT :limit OFFSET :offset")
-    fun getAllPictures(limit: Int, offset: Int): Flow<List<PictureCache>?>
+    @Query("SELECT * FROM picture_cache")
+    fun getAllPictures(): Flow<List<PictureCache>?>
 
     @Query("SELECT * FROM picture_cache WHERE author = :author")
     fun getPicturesByAuthor(author: String): Flow<List<PictureCache>?>
 
-    @Query("SELECT * FROM picture_cache ORDER BY width ASC")
-    fun getPicturesByWidthAscending(): Flow<List<PictureCache>?>
-
-    @Query("SELECT * FROM picture_cache ORDER BY width DESC")
-    fun getPicturesByWidthDescending(): Flow<List<PictureCache>?>
-
-    @Query("SELECT * FROM picture_cache ORDER BY height ASC")
-    fun getPicturesByHeightAscending(): Flow<List<PictureCache>?>
-
-    @Query("SELECT * FROM picture_cache ORDER BY height DESC")
-    fun getPicturesByHeightDescending(): Flow<List<PictureCache>?>
-
-    @Query("SELECT author FROM picture_cache")
+    @Query("SELECT DISTINCT author FROM picture_cache")
     fun getAuthors(): Flow<List<String>?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

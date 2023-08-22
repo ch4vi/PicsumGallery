@@ -23,14 +23,14 @@ import com.ch4vi.picsumgallery.ui.theme.PicsumGalleryTheme
 @Composable
 fun FilterSection(
     modifier: Modifier = Modifier,
-    selectedOption: String? = null,
+    selectedOption: String,
     options: List<String>,
     isExpanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
     onOptionSelected: (String) -> Unit,
     onClear: () -> Unit
 ) {
-    val value = selectedOption ?: stringResource(id = R.string.all)
+    val value = selectedOption.ifEmpty { stringResource(id = R.string.all) }
 
     Row(
         modifier = modifier,
@@ -56,10 +56,9 @@ fun FilterSection(
             ) {
                 options.forEach { selectionOption ->
                     DropdownMenuItem(
-                        text = { Text(selectionOption) },
+                        text = { Text(selectionOption.ifEmpty { stringResource(id = R.string.all) }) },
                         onClick = {
                             onOptionSelected(selectionOption)
-                            // expanded = false
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                     )
@@ -81,7 +80,7 @@ fun FilterSection(
 fun FilterSectionPreview() {
     PicsumGalleryTheme {
         FilterSection(
-            selectedOption = null,
+            selectedOption = "",
             options = optionsPreview,
             isExpanded = true,
             onExpandedChange = {},
