@@ -7,7 +7,7 @@ import com.ch4vi.picsumgallery.domain.model.Picture
 data class HomeState(
     val list: List<Picture> = emptyList(),
     val imageOrder: ImageOrder = ImageOrder.None(OrderType.Ascending),
-    val isLoading: Boolean = true,
+    val isLoading: Boolean = false,
     val isSortSectionVisible: Boolean = false,
     val filterAuthor: String? = null,
     val isAuthorFilterExpanded: Boolean = false,

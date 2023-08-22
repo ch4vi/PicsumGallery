@@ -50,7 +50,7 @@ fun PictureItem(
         Box(modifier = Modifier.fillMaxWidth()) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(item.url)
+                    .data(item.downloadUrl)
                     .crossfade(true)
                     .scale(Scale.FILL)
                     .build(),
@@ -79,7 +79,7 @@ fun PictureItem(
                 contentAlignment = Alignment.BottomStart
             ) {
                 Text(
-                    text = item.author,
+                    text = "#${item.id} ${item.author}",
                     style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.onSurface,
 
