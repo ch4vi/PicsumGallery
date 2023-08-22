@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.ch4vi.picsumgallery.ui.theme.PicsumGalleryTheme
 
-
 @Composable
 fun SortRadioButton(
     modifier: Modifier = Modifier,

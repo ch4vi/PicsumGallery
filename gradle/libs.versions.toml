@@ -2,26 +2,27 @@
 androidKotlin = "1.8.22"
 ktlint = "11.3.2"
 detekt = "1.22.0-RC3"
+
 hilt = "2.47"
 hilt-compose = "1.0.0"
-moshi = "1.15.0"
 core-ktx = "1.10.1"
 coil = "2.4.0"
 material3 = "1.1.1"
+ui-compose = "1.5.0"
+activity-compose = "1.7.2"
+lifecycle-ktx = "2.6.1"
+
+moshi = "1.15.0"
 retrofit = "2.9.0"
 okhhtp = "4.11.0"
-ui-compose = "1.5.0"
-navigation-compose = "2.7.0"
-lifecycle-ktx = "2.6.1"
-activity-compose = "1.7.2"
+room = "2.5.2"
+
 mockk = "1.13.5"
 coroutines-test = "1.7.0"
 core-test = "2.2.0"
 junit = "4.13.2"
 ui-junit = "1.1.5"
 ui-core-test = "1.5.0"
-
-
 
 [plugins]
 plugin-application = { id = "com.android.application", version = "8.1.0" }
@@ -34,7 +35,6 @@ plugin-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 android-core = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
 lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle-ktx" }
 activity = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
 material-icons = { module = "androidx.compose.material:material-icons-extended", version.ref = "ui-compose" }
 ui-ui = { module = "androidx.compose.ui:ui", version.ref = "ui-compose" }
 ui-graphics = { module = "androidx.compose.ui:ui-graphics", version.ref = "ui-compose" }
@@ -46,6 +46,7 @@ hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 moshi-kapt = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
+room-kapt = { module = "androidx.room:room-compiler", version.ref = "room" }
 hilt-kapt = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 hilt-test-kapt = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 
@@ -55,6 +56,8 @@ moshi-adapters = { module = "com.squareup.moshi:moshi-adapters", version.ref = "
 moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
+room = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 
 ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "ui-compose" }
 ui-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "ui-compose" }
@@ -73,7 +76,7 @@ ui-hilt = { module = "com.google.dagger:hilt-android-testing", version.ref = "hi
 [bundles]
 common = ["android-core", "hilt"]
 debug = ["ui-tooling", "ui-manifest"]
-ui = ["coil", "lifecycle", "activity", "navigation", "material-icons", "ui-ui", "ui-graphics", "ui-preview", "ui-material", "hilt-compose"]
-data = ["logging", "okhttp", "moshi-adapters", "moshi-kotlin", "retrofit", "retrofit-moshi"]
+ui = ["coil", "lifecycle", "activity", "material-icons", "ui-ui", "ui-graphics", "ui-preview", "ui-material", "hilt-compose"]
+data = ["logging", "okhttp", "moshi-adapters", "moshi-kotlin", "retrofit", "retrofit-moshi", "room", "room-ktx"]
 test = ["core-test", "coroutines-test", "kotlin-junit", "mockk"]
 uitest = ["ui-junit-ktx", "ui-hilt", "ui-core-test"]
