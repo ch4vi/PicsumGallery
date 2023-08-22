@@ -5,28 +5,21 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 
 inline fun <ResultType> networkBoundResource(
-    crossinline query: () -> Flow<ResultType?>,
     crossinline prepareQuery: suspend () -> Unit,
+    crossinline query: () -> Flow<ResultType?>,
     crossinline fetch: suspend () -> ResultType,
     crossinline saveFetchResult: suspend (ResultType) -> Unit,
     crossinline shouldFetch: (ResultType) -> Boolean = { true }
 ) = flow {
-    prepareQuery.invoke()
-    emit(Resource.Loading(null))
+    prepareQuery()
 
     val data = query().first()
 
     if (data == null || shouldFetch(data)) {
-        emit(Resource.Loading(data))
-
-        try {
-            val networkData = fetch()
-            saveFetchResult(networkData)
-            emit(Resource.Success(networkData))
-        } catch (t: Throwable) {
-            emit(Resource.Error(t, data))
-        }
+        val networkData = fetch()
+        saveFetchResult(networkData)
+        emit(query().first())
     } else {
-        emit(Resource.Success(data))
+        emit(data)
     }
 }
