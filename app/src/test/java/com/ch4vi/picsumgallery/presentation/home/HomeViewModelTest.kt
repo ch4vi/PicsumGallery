@@ -1,6 +1,5 @@
 package com.ch4vi.picsumgallery.presentation.home
 
-
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.ch4vi.picsumgallery.domain.DomainConstants
 import com.ch4vi.picsumgallery.domain.usecase.CheckConnectivity
@@ -84,7 +83,7 @@ class HomeViewModelTest {
             isOfflineVisible = false,
             isSortSectionVisible = false,
             isAuthorFilterExpanded = false,
-            authorOptions = listOf("") + domainConstants.authors,
+            authorOptions = listOf("") + domainConstants.authors
         )
 
         runBlocking {
@@ -113,7 +112,6 @@ class HomeViewModelTest {
 
     @Test
     fun `GIVEN viewModel WHEN GetNextPage THEN fetch same page`() {
-
         runBlocking {
             sut.dispatch(HomeEvent.GetNextPage)
 
@@ -133,7 +131,7 @@ class HomeViewModelTest {
             isOfflineVisible = false,
             isSortSectionVisible = true,
             isAuthorFilterExpanded = false,
-            authorOptions = listOf("") + domainConstants.authors,
+            authorOptions = listOf("") + domainConstants.authors
         )
 
         runBlocking {
@@ -152,7 +150,7 @@ class HomeViewModelTest {
             isOfflineVisible = false,
             isSortSectionVisible = true,
             isAuthorFilterExpanded = false,
-            authorOptions = listOf("") + domainConstants.authors,
+            authorOptions = listOf("") + domainConstants.authors
         )
 
         runBlocking {
@@ -171,7 +169,7 @@ class HomeViewModelTest {
             isOfflineVisible = false,
             isSortSectionVisible = false,
             isAuthorFilterExpanded = false,
-            authorOptions = listOf("") + domainConstants.authors,
+            authorOptions = listOf("") + domainConstants.authors
         )
 
         runBlocking {
@@ -196,7 +194,7 @@ class HomeViewModelTest {
             isOfflineVisible = false,
             isSortSectionVisible = false,
             isAuthorFilterExpanded = false,
-            authorOptions = listOf("") + domainConstants.authors,
+            authorOptions = listOf("") + domainConstants.authors
         )
         coEvery { getUserState() } returns domainConstants.otherUserState
 
@@ -215,7 +213,6 @@ class HomeViewModelTest {
 
     @Test
     fun `GIVEN viewModel WHEN OnClearResults THEN fetch same page`() {
-
         runBlocking {
             sut.dispatch(HomeEvent.OnClearResults)
 
