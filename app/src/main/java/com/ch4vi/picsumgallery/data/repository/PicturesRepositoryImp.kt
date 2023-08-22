@@ -7,7 +7,6 @@ import com.ch4vi.picsumgallery.data.database.datasource.PictureDao
 import com.ch4vi.picsumgallery.data.database.datasource.PictureDatabaseMapper.toCache
 import com.ch4vi.picsumgallery.data.database.datasource.PictureDatabaseMapper.toDomain
 import com.ch4vi.picsumgallery.data.preferences.datasource.UserPreferencesDatasource
-import com.ch4vi.picsumgallery.domain.model.Failure
 import com.ch4vi.picsumgallery.domain.model.Picture
 import com.ch4vi.picsumgallery.domain.model.UserState
 import com.ch4vi.picsumgallery.domain.repository.PicturesRepository
@@ -20,7 +19,7 @@ class PicturesRepositoryImp(
     private val apiDatasource: PictureApiDataSource,
     private val databaseDataSource: PictureDao,
     private val preferencesDatasource: UserPreferencesDatasource,
-    private val networkConnectivity: NetworkConnectivity,
+    private val networkConnectivity: NetworkConnectivity
 ) : PicturesRepository {
     override fun getPictures(clear: Boolean, page: Int, author: String?): Flow<List<Picture>?> =
         networkBoundResource(
@@ -31,8 +30,11 @@ class PicturesRepositoryImp(
             },
             query = {
                 val cachedPages =
-                    if (author == null) databaseDataSource.getAllPictures()
-                    else databaseDataSource.getPicturesByAuthor(author)
+                    if (author == null) {
+                        databaseDataSource.getAllPictures()
+                    } else {
+                        databaseDataSource.getPicturesByAuthor(author)
+                    }
                 cachedPages.map { cachedPictures ->
                     cachedPictures?.map { it.toDomain() }
                 }
@@ -46,7 +48,8 @@ class PicturesRepositoryImp(
             },
             shouldFetch = { cachedPages ->
                 networkConnectivity.isOnline() &&
-                        (author == null || cachedPages.size < (page * PER_PAGE))
+                    author == null &&
+                    cachedPages.size < (page * PER_PAGE)
             }
         )
 

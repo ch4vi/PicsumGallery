@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
+import kotlin.math.max
 
 sealed class HomeEvent {
     object Init : HomeEvent()
@@ -42,7 +43,7 @@ class HomeViewModel @Inject constructor(
     private val storeUserState: StoreUserState,
     private val getUserState: GetUserState,
     private val getStoredAuthors: GetStoredAuthors,
-    private val checkConnectivity: CheckConnectivity,
+    private val checkConnectivity: CheckConnectivity
 ) : ViewModel() {
 
     private val _state = mutableStateOf(HomeState())
@@ -52,11 +53,10 @@ class HomeViewModel @Inject constructor(
     val eventFlow = _eventFlow.asSharedFlow()
 
     private val lastPage
-        get() = (_state.value.list.size / PER_PAGE)
+        get() = max(1, (_state.value.list.size / PER_PAGE))
 
     private var getListJob: Job? = null
     private var getAuthorsJob: Job? = null
-
 
     sealed class UiEvent {
         data class ShowSnackbar(@StringRes val message: Int) : UiEvent()
@@ -79,10 +79,12 @@ class HomeViewModel @Inject constructor(
                 updateAuthor(event.author)
                 getPictureList(false, lastPage)
             }
+
             is HomeEvent.OnSortingChange -> {
                 updateImageOrder(event.order)
                 getPictureList(false, lastPage)
             }
+
             HomeEvent.OnClearResults -> onClearResults()
         }
     }
