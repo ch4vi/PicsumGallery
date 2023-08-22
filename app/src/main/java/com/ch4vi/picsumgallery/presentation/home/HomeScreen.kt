@@ -5,38 +5,63 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ch4vi.picsumgallery.R
 import com.ch4vi.picsumgallery.domain.model.Picture
+import com.ch4vi.picsumgallery.domain.model.UserState
 import com.ch4vi.picsumgallery.presentation.home.components.FilterSection
+import com.ch4vi.picsumgallery.presentation.home.components.HomeToolbar
 import com.ch4vi.picsumgallery.presentation.home.components.PictureList
 import com.ch4vi.picsumgallery.presentation.home.components.SortSection
 import com.ch4vi.picsumgallery.ui.theme.PicsumGalleryTheme
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is HomeViewModel.UiEvent.ShowSnackbar -> {
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = context.resources.getString(event.message),
+                            actionLabel = context.resources.getString(R.string.retry)
+                        ).apply {
+                            when (this) {
+                                SnackbarResult.Dismissed -> Unit
+                                SnackbarResult.ActionPerformed -> viewModel.dispatch(HomeEvent.Retry)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     HomeContainer(
         state = viewModel.state.value,
+        snackbarHostState = snackbarHostState,
         onEvent = { event ->
             viewModel.dispatch(event)
         }
@@ -46,30 +71,13 @@ fun HomeScreen(
 @Composable
 fun HomeContainer(
     state: HomeState,
+    snackbarHostState: SnackbarHostState,
     onEvent: (HomeEvent) -> Unit
 ) {
     Scaffold(
-        snackbarHost = { },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    text = stringResource(id = R.string.app_name),
-                    style = MaterialTheme.typography.headlineMedium
-                )
-                IconButton(
-                    onClick = { onEvent(HomeEvent.ToggleSortingVisibility) }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.FilterList,
-                        contentDescription = stringResource(R.string.description_icon_filter)
-                    )
-                }
-            }
+            HomeToolbar(state = state, onEvent = onEvent)
         }
     ) { padding ->
         Column(
@@ -84,7 +92,7 @@ fun HomeContainer(
                 SortSection(
                     modifier = Modifier
                         .padding(horizontal = 16.dp),
-                    imageOrder = state.imageOrder,
+                    imageOrder = state.userState.imageOrder,
                     onOrderChange = { order -> onEvent(HomeEvent.OnSortingChange(order)) }
                 )
             }
@@ -92,7 +100,7 @@ fun HomeContainer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                selectedOption = state.filterAuthor,
+                selectedOption = state.userState.authorFilter,
                 options = state.authorOptions,
                 isExpanded = state.isAuthorFilterExpanded,
                 onExpandedChange = { onEvent(HomeEvent.ToggleAuthorMenuVisibility) },
@@ -110,7 +118,11 @@ fun HomeContainer(
 @Composable
 fun HomeContainerPreview() {
     PicsumGalleryTheme {
-        HomeContainer(state = homeStatePreview, onEvent = {})
+        HomeContainer(
+            state = homeStatePreview,
+            snackbarHostState = SnackbarHostState(),
+            onEvent = {}
+        )
     }
 }
 
@@ -121,5 +133,5 @@ internal val homeStatePreview = HomeState(
     ),
     isLoading = true,
     isSortSectionVisible = false,
-    filterAuthor = null
+    userState = UserState()
 )

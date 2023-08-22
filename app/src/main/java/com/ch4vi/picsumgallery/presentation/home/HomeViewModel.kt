@@ -5,13 +5,17 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ch4vi.picsumgallery.CommonConstants.PER_PAGE
 import com.ch4vi.picsumgallery.CommonConstants.START_PAGE
 import com.ch4vi.picsumgallery.R
 import com.ch4vi.picsumgallery.domain.model.Failure
 import com.ch4vi.picsumgallery.domain.model.ImageOrder
-import com.ch4vi.picsumgallery.domain.model.Picture
-import com.ch4vi.picsumgallery.domain.repository.PicturesRepository
-import com.ch4vi.picsumgallery.domain.util.Resource
+import com.ch4vi.picsumgallery.domain.model.OrderType
+import com.ch4vi.picsumgallery.domain.usecase.CheckConnectivity
+import com.ch4vi.picsumgallery.domain.usecase.GetPicturesGallery
+import com.ch4vi.picsumgallery.domain.usecase.GetStoredAuthors
+import com.ch4vi.picsumgallery.domain.usecase.GetUserState
+import com.ch4vi.picsumgallery.domain.usecase.StoreUserState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -24,6 +28,7 @@ import javax.inject.Inject
 sealed class HomeEvent {
     object Init : HomeEvent()
     object GetNextPage : HomeEvent()
+    object Retry : HomeEvent()
     object ToggleSortingVisibility : HomeEvent()
     data class OnSortingChange(val order: ImageOrder) : HomeEvent()
     object ToggleAuthorMenuVisibility : HomeEvent()
@@ -33,7 +38,11 @@ sealed class HomeEvent {
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repo: PicturesRepository
+    private val getPicturesGallery: GetPicturesGallery,
+    private val storeUserState: StoreUserState,
+    private val getUserState: GetUserState,
+    private val getStoredAuthors: GetStoredAuthors,
+    private val checkConnectivity: CheckConnectivity,
 ) : ViewModel() {
 
     private val _state = mutableStateOf(HomeState())
@@ -42,47 +51,50 @@ class HomeViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    private var lastPage = START_PAGE
-    private val pictureList = mutableListOf<Picture>()
+    private val lastPage
+        get() = (_state.value.list.size / PER_PAGE)
+
     private var getListJob: Job? = null
+    private var getAuthorsJob: Job? = null
+
 
     sealed class UiEvent {
         data class ShowSnackbar(@StringRes val message: Int) : UiEvent()
     }
 
     init {
-        getPictureList(false, START_PAGE)
+        dispatch(HomeEvent.Init)
     }
 
     fun dispatch(event: HomeEvent) {
+        updateConnectivityState()
+
         when (event) {
             HomeEvent.Init -> initialLoad()
+            HomeEvent.Retry -> getPictureList(false, lastPage + 1)
             HomeEvent.GetNextPage -> getPictureList(false, lastPage + 1)
             HomeEvent.ToggleSortingVisibility -> toggleSortingVisibility()
-            is HomeEvent.OnAuthorMenuSelected -> Unit
-            is HomeEvent.OnSortingChange -> Unit
             HomeEvent.ToggleAuthorMenuVisibility -> toggleAuthorFilterVisibility()
+            is HomeEvent.OnAuthorMenuSelected -> {
+                updateAuthor(event.author)
+                getPictureList(false, lastPage)
+            }
+            is HomeEvent.OnSortingChange -> {
+                updateImageOrder(event.order)
+                getPictureList(false, lastPage)
+            }
             HomeEvent.OnClearResults -> onClearResults()
         }
     }
 
     private fun initialLoad() {
-        /*
-            Load preferences ( last filters, last sorting, last page)
-            get db records
-            apply filters
-         */
+        _state.value = state.value.copy(userState = getUserState())
+        getPictureList(false, START_PAGE)
     }
 
     private fun onClearResults() {
-        /*
-        Remove preferences
-        remove db
-        clear filters
-        clear sorting
-        fetch first page
-         */
-        _state.value = state.value.copy(isLoading = false, list = emptyList())
+        updateAuthor("")
+        updateImageOrder(ImageOrder.None(OrderType.Ascending))
         getPictureList(true, START_PAGE)
     }
 
@@ -92,33 +104,13 @@ class HomeViewModel @Inject constructor(
         getListJob?.cancel()
         _state.value = state.value.copy(isLoading = true)
 
-        getListJob = repo.getPictures(clear, page)
+        getListJob = getPicturesGallery(clear, page, state.value.userState)
             .catch {
+                onError(it)
+            }.onEach { pictureList ->
                 _state.value = state.value.copy(isLoading = false)
-                _eventFlow.emit(UiEvent.ShowSnackbar(message = onError(it)))
-            }.onEach { resource ->
-                when (resource) {
-                    is Resource.Error -> {
-                        _state.value = state.value.copy(isLoading = false)
-                        _eventFlow.emit(UiEvent.ShowSnackbar(message = onError(resource.throwable)))
-                    }
-
-                    is Resource.Loading -> {
-                        resource.data?.let {
-                            _state.value = state.value.copy(isLoading = false)
-                            pictureList.addAll(resource.data)
-                            lastPage = page
-                            _state.value = _state.value.copy(list = pictureList)
-                        }
-                    }
-
-                    is Resource.Success -> {
-                        _state.value = state.value.copy(isLoading = false)
-                        pictureList.addAll(resource.data)
-                        lastPage = page
-                        _state.value = _state.value.copy(list = pictureList)
-                    }
-                }
+                _state.value = _state.value.copy(list = pictureList)
+                updateAuthorOptions()
             }.launchIn(viewModelScope)
     }
 
@@ -126,15 +118,47 @@ class HomeViewModel @Inject constructor(
         _state.value = state.value.copy(isSortSectionVisible = !state.value.isSortSectionVisible)
     }
 
+    private fun updateImageOrder(imageOrder: ImageOrder) {
+        val userState = state.value.userState.copy(imageOrder = imageOrder)
+        _state.value = state.value.copy(userState = userState)
+        storeUserState(userState)
+    }
+
     private fun toggleAuthorFilterVisibility() {
         _state.value =
             state.value.copy(isAuthorFilterExpanded = !state.value.isAuthorFilterExpanded)
     }
 
-    private fun onError(error: Throwable): Int {
-        return when (error) {
+    private fun updateAuthor(author: String) {
+        val userState = state.value.userState.copy(authorFilter = author)
+        _state.value = state.value.copy(
+            userState = userState,
+            isAuthorFilterExpanded = false
+        )
+        storeUserState(userState)
+    }
+
+    private fun updateAuthorOptions() {
+        getAuthorsJob?.cancel()
+
+        getAuthorsJob = getStoredAuthors()
+            .catch {
+                onError(it)
+            }.onEach { authors ->
+                _state.value = state.value.copy(authorOptions = listOf("") + authors)
+            }.launchIn(viewModelScope)
+    }
+
+    private fun updateConnectivityState() {
+        _state.value = state.value.copy(isOfflineVisible = !checkConnectivity())
+    }
+
+    private suspend fun onError(error: Throwable) {
+        _state.value = state.value.copy(isLoading = false)
+        val errorRes = when (error) {
             is Failure.NetworkFailure -> R.string.failure_network
             else -> R.string.failure_generic
         }
+        _eventFlow.emit(UiEvent.ShowSnackbar(message = errorRes))
     }
 }

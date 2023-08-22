@@ -79,10 +79,9 @@ fun PictureItem(
                 contentAlignment = Alignment.BottomStart
             ) {
                 Text(
-                    text = "#${item.id} ${item.author}",
-                    style = MaterialTheme.typography.headlineSmall,
+                    text = item.author,
+                    style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface,
-
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
