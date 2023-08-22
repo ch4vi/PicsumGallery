@@ -6,6 +6,7 @@ import com.ch4vi.picsumgallery.domain.model.Picture
 
 object PictureApiMapper {
 
+    @Suppress("ThrowsCount")
     @Throws(Failure.MapperFailure::class)
     fun PictureDTO.toDomain(): Picture {
         return Picture(
