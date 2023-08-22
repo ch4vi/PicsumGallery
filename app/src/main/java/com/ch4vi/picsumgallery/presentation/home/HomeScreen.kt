@@ -100,6 +100,7 @@ fun HomeContainer(
                 onClear = { onEvent(HomeEvent.OnClearResults) }
             )
             PictureList(state = state) {
+                onEvent(HomeEvent.GetNextPage)
             }
         }
     }
