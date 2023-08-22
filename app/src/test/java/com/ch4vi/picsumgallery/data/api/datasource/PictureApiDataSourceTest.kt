@@ -12,7 +12,6 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertIs
 
-
 class PictureApiDataSourceTest {
 
     @RelaxedMockK
