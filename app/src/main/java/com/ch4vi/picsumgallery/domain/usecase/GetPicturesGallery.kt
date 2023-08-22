@@ -16,8 +16,9 @@ class GetPicturesGallery @Inject constructor(
     operator fun invoke(clear: Boolean, page: Int, userState: UserState): Flow<List<Picture>> {
         return repository.getPictures(clear, page, userState.authorFilter.ifEmpty { null })
             .transform { pictures ->
-                if (pictures == null) emit(emptyList())
-                else {
+                if (pictures == null) {
+                    emit(emptyList())
+                } else {
                     val sortedList = when (userState.imageOrder) {
                         is ImageOrder.None -> pictures
                         is ImageOrder.Height -> {

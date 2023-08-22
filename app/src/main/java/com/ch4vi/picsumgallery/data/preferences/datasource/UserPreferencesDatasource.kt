@@ -32,8 +32,10 @@ class UserPreferencesDatasource(
         return try {
             val author = preferences.getString(Key.author, "") ?: ""
             val default = ImageOrder.None(OrderType.Ascending).toPreferences()
-            val imageOrder = (preferences.getInt(Key.imageOrder, default.first) to
-                    preferences.getInt(Key.orderType, default.second)).toImageOrder()
+            val imageOrder = (
+                preferences.getInt(Key.imageOrder, default.first) to
+                    preferences.getInt(Key.orderType, default.second)
+                ).toImageOrder()
             UserState(author, imageOrder)
         } catch (f: Failure.MapperFailure) {
             UserState()

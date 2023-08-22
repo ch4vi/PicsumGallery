@@ -51,7 +51,6 @@ class RetrofitConfiguration {
                 setLevel(HttpLoggingInterceptor.Level.NONE)
             }
         }
-
     }
 
     private fun initRetrofit(moshi: Moshi, client: OkHttpClient): Retrofit = Retrofit.Builder()

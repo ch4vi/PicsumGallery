@@ -10,4 +10,3 @@ class StoreUserState @Inject constructor(
     operator fun invoke(userState: UserState) =
         repository.storeUserState(userState)
 }
-
