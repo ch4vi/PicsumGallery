@@ -22,12 +22,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ch4vi.picsumgallery.R
 import com.ch4vi.picsumgallery.presentation.home.HomeEvent
 import com.ch4vi.picsumgallery.presentation.home.HomeState
 import com.ch4vi.picsumgallery.presentation.home.homeStatePreview
+import com.ch4vi.picsumgallery.presentation.util.MultiPreview
 import com.ch4vi.picsumgallery.ui.theme.PicsumGalleryTheme
 
 private const val OFFLINE_TEST_TAG = "offline_tag"
@@ -83,7 +83,7 @@ fun HomeToolbar(
     }
 }
 
-@Preview(showBackground = true)
+@MultiPreview
 @Composable
 fun HomeToolbarPreview() {
     PicsumGalleryTheme {

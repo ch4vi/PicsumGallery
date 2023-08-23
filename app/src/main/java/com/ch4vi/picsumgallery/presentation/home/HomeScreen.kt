@@ -19,7 +19,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ch4vi.picsumgallery.R
@@ -29,6 +28,7 @@ import com.ch4vi.picsumgallery.presentation.home.components.FilterSection
 import com.ch4vi.picsumgallery.presentation.home.components.HomeToolbar
 import com.ch4vi.picsumgallery.presentation.home.components.PictureList
 import com.ch4vi.picsumgallery.presentation.home.components.SortSection
+import com.ch4vi.picsumgallery.presentation.util.MultiPreview
 import com.ch4vi.picsumgallery.ui.theme.PicsumGalleryTheme
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -120,7 +120,7 @@ fun HomeContainer(
     }
 }
 
-@Preview(showBackground = true)
+@MultiPreview
 @Composable
 fun HomeContainerPreview() {
     PicsumGalleryTheme {

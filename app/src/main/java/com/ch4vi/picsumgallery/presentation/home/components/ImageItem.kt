@@ -21,7 +21,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -29,6 +28,7 @@ import coil.request.ImageRequest
 import coil.size.Scale
 import com.ch4vi.picsumgallery.R
 import com.ch4vi.picsumgallery.domain.model.Picture
+import com.ch4vi.picsumgallery.presentation.util.MultiPreview
 import com.ch4vi.picsumgallery.ui.theme.PicsumGalleryTheme
 
 private const val RATIO_16_9 = 16f / 9f
@@ -66,7 +66,7 @@ fun PictureItem(
                         brush = Brush.verticalGradient(
                             colors = listOf(
                                 Color.Transparent,
-                                Color.White
+                                MaterialTheme.colorScheme.background
                             ),
                             startY = 300f
                         )
@@ -81,7 +81,7 @@ fun PictureItem(
                 Text(
                     text = item.author,
                     style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = MaterialTheme.colorScheme.onBackground,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -90,7 +90,7 @@ fun PictureItem(
     }
 }
 
-@Preview(showBackground = true, widthDp = 320, heightDp = 500)
+@MultiPreview
 @Composable
 fun PictureItemPreview() {
     PicsumGalleryTheme {
