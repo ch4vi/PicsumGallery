@@ -10,9 +10,9 @@ Also I added **Ktlint** and **Detekt** plugins to check the code style.
 
 <br />
 <p align="center">
-<img src="https://fastly.picsum.photos/id/178/300/600.jpg?hmac=HS9IUrOvFPT6Xo3RUAvMyApQqPzfKWr1mSp8IVqGjC4" width=300px>
+<img src="https://github.com/ch4vi/PicsumGallery/blob/develop/media/light-mode.gif" width=300px>
 &emsp;
-<img src="https://fastly.picsum.photos/id/178/300/600.jpg?hmac=HS9IUrOvFPT6Xo3RUAvMyApQqPzfKWr1mSp8IVqGjC4" width=300px>
+<img src="https://github.com/ch4vi/PicsumGallery/blob/develop/media/dark-mode.png" width=300px>
 </p>
 
 ## Features
