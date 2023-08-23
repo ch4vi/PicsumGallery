@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -31,6 +32,9 @@ import com.ch4vi.picsumgallery.presentation.home.components.SortSection
 import com.ch4vi.picsumgallery.ui.theme.PicsumGalleryTheme
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+
+private const val SORT_SECTION_TEST_TAG = "sort_section_tag"
+private const val FILTER_SECTION_TEST_TAG = "filter_section_tag"
 
 @Composable
 fun HomeScreen(
@@ -91,6 +95,7 @@ fun HomeContainer(
             ) {
                 SortSection(
                     modifier = Modifier
+                        .testTag(SORT_SECTION_TEST_TAG)
                         .padding(horizontal = 16.dp),
                     imageOrder = state.userState.imageOrder,
                     onOrderChange = { order -> onEvent(HomeEvent.OnSortingChange(order)) }
@@ -98,6 +103,7 @@ fun HomeContainer(
             }
             FilterSection(
                 modifier = Modifier
+                    .testTag(FILTER_SECTION_TEST_TAG)
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 selectedOption = state.userState.authorFilter,

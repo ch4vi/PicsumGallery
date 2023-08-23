@@ -31,17 +31,17 @@ import com.ch4vi.picsumgallery.R
 import com.ch4vi.picsumgallery.domain.model.Picture
 import com.ch4vi.picsumgallery.ui.theme.PicsumGalleryTheme
 
-private const val Ratio16x9 = 16f / 9f
+private const val RATIO_16_9 = 16f / 9f
 
 @Composable
 fun PictureItem(
-    item: Picture,
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = 12.dp
+    cornerRadius: Dp = 12.dp,
+    item: Picture
 ) {
     Card(
         modifier = modifier
-            .aspectRatio(ratio = Ratio16x9),
+            .aspectRatio(ratio = RATIO_16_9),
         shape = RoundedCornerShape(cornerRadius),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 8.dp

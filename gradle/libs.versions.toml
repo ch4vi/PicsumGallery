@@ -25,7 +25,7 @@ ui-junit = "1.1.5"
 ui-core-test = "1.5.0"
 
 [plugins]
-plugin-application = { id = "com.android.application", version = "8.1.0" }
+plugin-application = { id = "com.android.application", version = "8.1.1" }
 plugin-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "androidKotlin" }
 plugin-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 plugin-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
@@ -72,6 +72,7 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 ui-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "ui-junit" }
 ui-core-test = { module = "androidx.test:core-ktx", version.ref = "ui-core-test" }
 ui-hilt = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt" }
+ui-compose-test = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "ui-compose" }
 
 [bundles]
 common = ["android-core", "hilt"]
@@ -79,4 +80,4 @@ debug = ["ui-tooling", "ui-manifest"]
 ui = ["coil", "lifecycle", "activity", "material-icons", "ui-ui", "ui-graphics", "ui-preview", "ui-material", "hilt-compose"]
 data = ["logging", "okhttp", "moshi-adapters", "moshi-kotlin", "retrofit", "retrofit-moshi", "room", "room-ktx"]
 test = ["core-test", "coroutines-test", "kotlin-junit", "mockk"]
-uitest = ["ui-junit-ktx", "ui-hilt", "ui-core-test"]
+uitest = ["ui-junit-ktx", "ui-hilt", "ui-core-test", "ui-compose-test"]
