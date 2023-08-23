@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,6 +29,10 @@ import com.ch4vi.picsumgallery.presentation.home.HomeEvent
 import com.ch4vi.picsumgallery.presentation.home.HomeState
 import com.ch4vi.picsumgallery.presentation.home.homeStatePreview
 import com.ch4vi.picsumgallery.ui.theme.PicsumGalleryTheme
+
+private const val OFFLINE_TEST_TAG = "offline_tag"
+private const val TITLE_TEST_TAG = "title_tag"
+private const val FILTER_TEST_TAG = "filter_tag"
 
 @Composable
 fun HomeToolbar(
@@ -47,6 +52,7 @@ fun HomeToolbar(
                     .padding(vertical = 8.dp, horizontal = 16.dp)
             ) {
                 Text(
+                    modifier = Modifier.testTag(OFFLINE_TEST_TAG),
                     text = stringResource(id = R.string.offline),
                     style = MaterialTheme.typography.labelMedium
                 )
@@ -58,7 +64,9 @@ fun HomeToolbar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .testTag(TITLE_TEST_TAG),
                 text = stringResource(id = R.string.app_name),
                 style = MaterialTheme.typography.headlineMedium
             )
@@ -66,6 +74,7 @@ fun HomeToolbar(
                 onClick = { onEvent(HomeEvent.ToggleSortingVisibility) }
             ) {
                 Icon(
+                    modifier = Modifier.testTag(FILTER_TEST_TAG),
                     imageVector = Icons.Default.FilterList,
                     contentDescription = stringResource(R.string.description_icon_filter)
                 )
