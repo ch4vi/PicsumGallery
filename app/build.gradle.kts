@@ -1,9 +1,10 @@
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
+    alias(libs.plugins.plugin.application)
+    alias(libs.plugins.plugin.kotlin)
+    alias(libs.plugins.plugin.ksp)
+    alias(libs.plugins.plugin.hilt)
+    alias(libs.plugins.kotlin.compose)
     id("kotlin-parcelize")
-    id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
 }
 
 val appName = "Picsum Gallery"
@@ -43,17 +44,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.8"
     }
     packaging {
         resources {
@@ -77,13 +72,13 @@ dependencies {
     implementation(libs.bundles.ui)
     debugImplementation(libs.bundles.debug)
 
-    kapt(libs.hilt.kapt)
-    kapt(libs.moshi.kapt)
-    kapt(libs.room.kapt)
+    ksp(libs.hilt.compiler)
+    ksp(libs.moshi.compiler)
+    ksp(libs.room.compiler)
     implementation(libs.bundles.data)
 
     testImplementation(libs.bundles.test)
 
-    kaptAndroidTest(libs.hilt.kapt)
+    kspAndroidTest(libs.hilt.compiler)
     androidTestImplementation(libs.bundles.uitest)
 }

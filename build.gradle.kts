@@ -1,12 +1,10 @@
-@file:Suppress("DSL_SCOPE_VIOLATION")
-
 import io.gitlab.arturbosch.detekt.Detekt
 
 extra.apply {
     set("versionName", "1.0.0")
     set("versionCode", 1)
-    set("compileVersion", 34)
-    set("targetVersion", 33)
+    set("compileVersion", 36)
+    set("targetVersion", 34)
     set("minVersion", 30)
 }
 
@@ -15,7 +13,9 @@ plugins {
     alias(libs.plugins.plugin.kotlin) apply false
     alias(libs.plugins.plugin.detekt) apply false
     alias(libs.plugins.plugin.ktlint) apply false
+    alias(libs.plugins.plugin.ksp) apply false
     alias(libs.plugins.plugin.hilt) apply false
+    alias(libs.plugins.kotlin.compose) apply false
 }
 
 allprojects {
@@ -45,5 +45,5 @@ subprojects {
 }
 
 tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory)
 }

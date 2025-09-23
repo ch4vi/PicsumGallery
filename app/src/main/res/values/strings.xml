@@ -14,7 +14,7 @@
     <string name="author">Author</string>
     <string name="clear">Clear</string>
 
-    <string name="failure_network">Can\'t fetch data</string>
+    <string name="failure_network">Can’t fetch data</string>
     <string name="failure_generic">Something went wrong</string>
     <string name="offline">Offline mode</string>
     <string name="retry">Retry</string>

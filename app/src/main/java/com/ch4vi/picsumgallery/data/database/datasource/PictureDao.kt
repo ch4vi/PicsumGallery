@@ -13,13 +13,13 @@ interface PictureDao {
 
     @Transaction
     @Query("SELECT * FROM picture_cache")
-    fun getAllPictures(): Flow<List<PictureCache>?>
+    fun getAllPictures(): Flow<List<PictureCache>>
 
     @Query("SELECT * FROM picture_cache WHERE author = :author")
-    fun getPicturesByAuthor(author: String): Flow<List<PictureCache>?>
+    fun getPicturesByAuthor(author: String): Flow<List<PictureCache>>
 
     @Query("SELECT DISTINCT author FROM picture_cache")
-    fun getAuthors(): Flow<List<String>?>
+    fun getAuthors(): Flow<List<String>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPage(page: List<PictureCache>)

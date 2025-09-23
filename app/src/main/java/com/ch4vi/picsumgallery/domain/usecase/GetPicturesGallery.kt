@@ -21,19 +21,17 @@ class GetPicturesGallery @Inject constructor(
                 } else {
                     val sortedList = when (userState.imageOrder) {
                         is ImageOrder.None -> pictures
-                        is ImageOrder.Height -> {
+                        is ImageOrder.Height ->
                             when (userState.imageOrder.orderType) {
                                 OrderType.Ascending -> pictures.sortedBy { it.height }
                                 OrderType.Descending -> pictures.sortedByDescending { it.height }
                             }
-                        }
 
-                        is ImageOrder.Width -> {
+                        is ImageOrder.Width ->
                             when (userState.imageOrder.orderType) {
                                 OrderType.Ascending -> pictures.sortedBy { it.width }
                                 OrderType.Descending -> pictures.sortedByDescending { it.width }
                             }
-                        }
                     }
                     emit(sortedList)
                 }

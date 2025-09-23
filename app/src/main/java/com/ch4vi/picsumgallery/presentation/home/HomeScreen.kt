@@ -17,10 +17,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ch4vi.picsumgallery.R
 import com.ch4vi.picsumgallery.domain.model.Picture
 import com.ch4vi.picsumgallery.domain.model.UserState
@@ -38,20 +38,20 @@ private const val FILTER_SECTION_TEST_TAG = "filter_section_tag"
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = viewModel()
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
+    val resources = LocalResources.current
 
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(Unit) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                is HomeViewModel.UiEvent.ShowSnackbar -> {
+                is HomeViewModel.UiEvent.ShowSnackbar ->
                     scope.launch {
                         snackbarHostState.showSnackbar(
-                            message = context.resources.getString(event.message),
-                            actionLabel = context.resources.getString(R.string.retry)
+                            message = resources.getString(event.message),
+                            actionLabel = resources.getString(R.string.retry)
                         ).apply {
                             when (this) {
                                 SnackbarResult.Dismissed -> Unit
@@ -59,7 +59,6 @@ fun HomeScreen(
                             }
                         }
                     }
-                }
             }
         }
     }
